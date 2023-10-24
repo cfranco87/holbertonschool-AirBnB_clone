@@ -4,13 +4,13 @@ Description:
 
 This project is the first step towards building your first full web application: the AirBnB clone. This first step is very important because you will use what you build during this project with all other following projects: HTML/CSS templating, database storage, API, front-end integration.
 
-'''
+```
 Environment of our Simple Shell
 Language: Python
 Editor: VSC by Holberton.
 Compile mode: 
 Style rules: Pycodestyle
-'''
+```
 
 **What’s a command interpreter?**
 Do you remember the Shell? It’s exactly the same but limited to a specific use-case. In our case, we want to be able to manage the objects of our project:
@@ -31,7 +31,7 @@ A command interpreter, often referred to as a command-line interpreter or shell,
 
 Using a command interpreter, such as the Command Prompt in Windows or a Unix-like shell in Linux or macOS, involves entering text-based commands to perform various tasks and interact with the operating system. Here's a basic guide on how to use a command interpreter:
 
-'''1. Opening the Command Interpreter:
+```1. Opening the Command Interpreter:
 
 As mentioned earlier, you can open the Command Prompt in Windows using methods like the Start Menu, Run dialog, or Task Manager. In Linux and macOS, you can usually open the terminal by searching for "Terminal" or "Console" in the applications menu.
 2. Understanding the Prompt:
@@ -66,28 +66,69 @@ To get help with a command, you can often use the /? flag or --help flag. For ex
 
 To exit the command interpreter, you can usually type the exit command or use keyboard shortcuts like Ctrl + D or Ctrl + Z.
 The specific commands and their syntax may vary between different command interpreters, so it's important to consult the documentation or use built-in help features for the interpreter you are using. Additionally, keep in mind that advanced usage of command interpreters may involve scripting and more complex operations, so learning the basics is just the beginning.
-'''
+```
 
 **Navigating the File System**
 
 Change to a specific directory:
-'''
+```
 cd C:\Users
-'''
+```
 List files and directories in the current folder:
-'''
+```
 dir
-'''
+```
 Create a new directory:
-'''
+```
 mkdir MyNewFolder
-'''
+```
 **Running Programs and Scripts**
 
 Run a program (e.g., Notepad):
-'''
+```
+notepar
+```
+Run a Python script (assuming Python is installed):
+```
+python myscript.py
+```
+**Passing Arguments**
 
-
+List files in a specific directory with a wide format:
+```
+dir /w
+```
+Display the IP configuration of your network:
+```
+ipconfig /all
+```
+**Redirecting Output**
+Save the directory listing to a text file:
+```
+dir > directory.txt
+```
+Append the output of a command to an existing text file:
+```
+echo "Additional text" >> existingfile.txt
+```
+**Using Pipes**
+List files containing "txt" in their names:
+```
+dir | find "txt"
+```
+Get a list of running processes and search for "chrome":
+```
+tasklist | find "chrome"
+```
+**Help and Documentation**
+Get help for a specific command (e.g., "dir")
+```
+dir /?
+```
+Get a list of available commands:
+```
+help
+```
 
 
 
