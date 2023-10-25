@@ -9,6 +9,7 @@ class BaseModel:
     DATE_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
 
     def __init__(self, *args, **kwargs):
+        """no comments here"""
         self.id = str(uuid4())
         self.created_at = datetime.now()
         self.updated_at = self.created_at
