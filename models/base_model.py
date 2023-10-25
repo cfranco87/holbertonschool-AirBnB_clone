@@ -1,24 +1,34 @@
 #!/usr/bin/python3
 """BaseModel defines all common attributes/method"""
 from datetime import datetime
-import uuid
+from uuid import uuid4
 
 
 class BaseModel:
-    """A base class for all hbnb models"""
+    """class BaseModel"""
+    DATE_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
+
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
-        if not kwargs:
-            self.id = str(uuid.uuid4())
+        self.id = str(uuid4())
+        self.created_at = datetime.now()
+        self.updated_at = self.created_at
+        self.initialize_iso_str()
+
+        """remove class attribute id kwarg if it exist"""
+        kwargs.pop('__class__', None)
+
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                if key in ['created_at', 'updated_at']:
+                    value = datetime.strptime(value, self.DATE_FORMAT)
+                setattr(self, key, value)
+
+        if 'created_at' not in kwargs:
             self.created_at = datetime.now()
-            self.updated_at = datetime.now()
-        else:
-            kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'],
-                                                     '%Y-%m-%dT%H:%M:%S.%f')
-            kwargs['created_at'] = datetime.strptime(kwargs['created_at'],
-                                                     '%Y-%m-%dT%H:%M:%S.%f')
-            del kwargs['__class__']
-            self.__dict__.update(kwargs)
+
+        if 'updated_at' not in kwargs:
+            self.updated_at = self.created_at
 
     def save(self):
         """updates the public instance attribute"""
