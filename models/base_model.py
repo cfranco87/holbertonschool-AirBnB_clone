@@ -9,7 +9,7 @@ class BaseModel:
     DATE_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
 
     def __init__(self, *args, **kwargs):
-        """Instatntiates a new model"""
+        """Instantiates a new model"""
         from models import storage
         self.id = str(uuid4())
         self.created_at = datetime.now()
