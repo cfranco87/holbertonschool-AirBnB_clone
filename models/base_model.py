@@ -10,10 +10,12 @@ class BaseModel:
 
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
+        from models import storage
         self.id = str(uuid4())
         self.created_at = datetime.now()
         self.updated_at = self.created_at
         self.initialize_iso_str()
+        storage.new(self)
 
         """remove class attribute id kwarg if it exist"""
         kwargs.pop('__class__', None)
@@ -32,7 +34,9 @@ class BaseModel:
 
     def save(self):
         """updates the public instance attribute"""
+        from models import storage
         self.updated_at = datetime.now()
+        storage.save()
 
     def to_dict(self):
         """
