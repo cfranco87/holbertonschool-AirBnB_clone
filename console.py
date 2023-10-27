@@ -1,12 +1,26 @@
 #!/usr/bin/python3
 """command interpreter"""
 
+from datetime import datetime
 import cmd
-
+from models.__init__ import storage
+from models.base_model import BaseModel
+import re
+from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 
 class HBNBCommand(cmd.Cmd):
     """class cmd """
     prompt = "(hbnb)"
+    classes = {
+        'BaseModel': BaseModel, 'User': User, 'Place': Place, 
+        'Amenity': Amenity, 'City': City,
+        'State': State, 'Review': Review
+    }
 
     def do_quit(self, args):
         """quit interpreter"""
@@ -22,15 +36,29 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, arg):
         """creating"""
-        arguments = args.split()
-        if not self.class_verification(args):
+        
+        if not arg:
+            print("** class name missing **")
+
+        arguments = re.findall(r'(?:"[^"]*"|[^"\s]+)', arg)
+        
+        if arguments[0] not in HBNBCommand.classes:
+            print("** class doesn't exist **")
             return
 
-        instance = eval(str(arsg[0] + '()'))
-        if not isinstance(instance, BaseModel):
-            return
-        instance.save()
-        print(instance.id)
+        my_dict = {}
+        for i in arguments[1:]:
+            m  = re.match(r'([^=]+)=(.*)', i)
+            if m: 
+                k, j = m.group
+                j = j.replace('\\"', '"')
+                my_dict[i] = j
+        my_dict['created_at'] = datetime.now().isoformat()
+        my_dict['updated_at'] = datetime.now().isoformat()
+
+        my_instance = HBNBCommand.classes[arguments[0]](**my_dict)
+        storage.save()
+        print(my_instance)
 
     def do_show(self, args):
         """show class and id"""
@@ -72,8 +100,51 @@ class HBNBCommand(cmd.Cmd):
         models.storage.save()
 
     def do_all(self, args):
+        my_list = []
+        if args:
+            args = args.split(' ')[0]
+            if args not in HBNBCommand.classes:
+                print("** class doesn't exist **")
+                return
+            for i, j in storage._FileStorage__objects.items():
+                my_list.append(str(j))
+        else:
+            for i, j in storage._FileStorage__objects.items():
+                my_list.append(str(j))
+
 
     def do_update(self, line):
+        if not args:
+            print("** class name missing **")
+
+        arguments = re.findall(r'(?:"[^"]*"|[^"\s]+)', arg)
+        
+        if arguments[0] not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+            return
+
+        my_dict = {}
+        for i in arguments[1:]:
+            m  = re.match(r'([^=]+)=(.*)', i)
+            if m: 
+                k, j = m.group
+                j = j.replace('\\"', '"')
+                my_dict[i] = j
+
+        if 'id' not in my_dict:
+            print('** instance id missing **') 
+        
+        my_id = my_dict['id']
+        i = arguments[0] + "." + my_id
+        if i not in storage.all():
+            print("** no instance found **")
+        my_obj = storage.all()[i]
+
+        for k_name, l_value in my_dict.items():
+            setattr(my_obj, k_name, l_value)
+        
+        my_obj.save()
+        
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
