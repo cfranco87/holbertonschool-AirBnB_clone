@@ -13,11 +13,12 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 
+
 class HBNBCommand(cmd.Cmd):
     """class cmd """
     prompt = "(hbnb)"
     classes = {
-        'BaseModel': BaseModel, 'User': User, 'Place': Place, 
+        'BaseModel': BaseModel, 'User': User, 'Place': Place,
         'Amenity': Amenity, 'City': City,
         'State': State, 'Review': Review
     }
@@ -36,20 +37,20 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, arg):
         """creating"""
-        
+
         if not arg:
             print("** class name missing **")
 
         arguments = re.findall(r'(?:"[^"]*"|[^"\s]+)', arg)
-        
+
         if arguments[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
         my_dict = {}
         for i in arguments[1:]:
-            m  = re.match(r'([^=]+)=(.*)', i)
-            if m: 
+            m = re.match(r'([^=]+)=(.*)', i)
+            if m:
                 k, j = m.group
                 j = j.replace('\\"', '"')
                 my_dict[i] = j
@@ -112,28 +113,27 @@ class HBNBCommand(cmd.Cmd):
             for i, j in storage._FileStorage__objects.items():
                 my_list.append(str(j))
 
-
     def do_update(self, line):
         if not args:
             print("** class name missing **")
 
         arguments = re.findall(r'(?:"[^"]*"|[^"\s]+)', arg)
-        
+
         if arguments[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
         my_dict = {}
         for i in arguments[1:]:
-            m  = re.match(r'([^=]+)=(.*)', i)
-            if m: 
+            m = re.match(r'([^=]+)=(.*)', i)
+            if m:
                 k, j = m.group
                 j = j.replace('\\"', '"')
                 my_dict[i] = j
 
         if 'id' not in my_dict:
-            print('** instance id missing **') 
-        
+            print('** instance id missing **')
+
         my_id = my_dict['id']
         i = arguments[0] + "." + my_id
         if i not in storage.all():
@@ -142,9 +142,9 @@ class HBNBCommand(cmd.Cmd):
 
         for k_name, l_value in my_dict.items():
             setattr(my_obj, k_name, l_value)
-        
+
         my_obj.save()
-        
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
