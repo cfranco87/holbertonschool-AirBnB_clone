@@ -17,6 +17,6 @@ class Place(BaseModel):
     longitude = 0.0
     amenity_ids = []
 
-    def __init__def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """Creates new instances of City."""
         super().__init__(*args, **kwargs)
