@@ -70,10 +70,17 @@ class HBNBCommand(cmd.Cmd):
 
         if not arg:
             print("** class name missing **")
+            return
 
         arguments = re.findall(r'(?:"[^"]*"|[^"\s]+)', arg)
+        
+        if not arguments:
+            print("** missing argument(s) **")
+            return
 
-        if arguments[0] not in HBNBCommand.classes:
+        class_n = arguments[0]
+
+        if class_n not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
@@ -81,42 +88,41 @@ class HBNBCommand(cmd.Cmd):
         for i in arguments[1:]:
             m = re.match(r'([^=]+)=(.*)', i)
             if m:
-                k, j = m.group
+                k, j = m.groups()
                 j = j.replace('\\"', '"')
-                my_dict[i] = j
+                my_dict[k] = j
         my_dict['created_at'] = datetime.now().isoformat()
         my_dict['updated_at'] = datetime.now().isoformat()
 
-        my_instance = HBNBCommand.classes[arguments[0]](**my_dict)
+        my_instance = HBNBCommand.classes[class_n](**my_dict)
         storage.save()
         print(my_instance)
 
     def do_show(self, args):
         """show class and id"""
-        import models
-        arguments = args.split()
+        new = args.partition(" ")
+        class_n = new[0]
+        class_id = new[2]
 
-        if len(arguments) < 1:
+        if class_id and ' ' in class_id:
+            class_id = class_id.partition(' ')[0]
+
+        if not class_n:
             print("** class name missing **")
             return
 
-        class_name = arguments[0]
-        try:
-            obj_id = arguments[1]
-        except IndexError:
-            print("** instance id missing **")
-            return
-
-        if not self.class_exists(class_name):
+        if class_n not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
-        string_key = class_name + '.' + obj_id
-        objects = models.storage.all()
+        if not class_id:
+            print("** instance id missing **")
+            return
 
-        if string_key in objects:
-            print(objects[string_key])
-        else:
+        key = class_n + "." + class_id
+        try:
+            print(storage._FileStorage__objects[key])
+        except KeyError:
             print("** no instance found **")
 
     def do_destroy(self, args):
