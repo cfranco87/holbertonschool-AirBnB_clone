@@ -93,6 +93,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_show(self, args):
         """show class and id"""
+        import models
         arguments = args.split()
 
         if len(arguments) < 1:
@@ -120,15 +121,31 @@ class HBNBCommand(cmd.Cmd):
 
     def do_destroy(self, args):
         """destroy"""
-        arguments = args.split()
-        if not self.class_exists(args):
+        new = args.partition(" ")
+        class_n = new[0]
+        class_id = new[2]
+        if class_id and ' ' in class_id:
+            class_id = class_id.partition(' ')[0]
+
+        if not class_n:
+            print("** class name missing **")
             return
-        if not self.id_verification(args):
+
+        if class_n not in HBNBCommand.classes:
+            print("** class doesn't exist **")
             return
-        string_key = str(args[0]) + '.' + str(args[1])
-        objects = models.storage.all()
-        models.storage.delete(objects[string_key])
-        models.storage.save()
+
+        if not class_id:
+            print("** instance id missing **")
+            return
+
+        key = class_n + "." + class_id
+
+        try:
+            del(storage.all()[key])
+            storage.save()
+        except KeyError:
+            print("** no instance found **")
 
     def do_all(self, args):
         my_list = []
@@ -142,38 +159,49 @@ class HBNBCommand(cmd.Cmd):
         else:
             for i, j in storage._FileStorage__objects.items():
                 my_list.append(str(j))
+        
+        print(my_list)
 
-    def do_update(self, line):
-        if not args:
+    def do_update(self, arg):
+        if not arg:
             print("** class name missing **")
+            return
 
-        arguments = re.findall(r'(?:"[^"]*"|[^"\s]+)', arg)
+        args = re.findall(r'(?:"[^"]*"|[^"\s]+)', arg)
+        class_name = args[0]
 
-        if arguments[0] not in HBNBCommand.classes:
+        if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
-        my_dict = {}
-        for i in arguments[1:]:
-            m = re.match(r'([^=]+)=(.*)', i)
-            if m:
-                k, j = m.group
-                j = j.replace('\\"', '"')
-                my_dict[i] = j
+        params = {}
+        for param in args[1:]:
+            match = re.match(r'([^=]+)=(.*)', param)
+            if match:
+                key, value = match.groups()
+                value = value.replace('_', ' ').replace('\\"', '"')
+                params[key] = value
 
-        if 'id' not in my_dict:
-            print('** instance id missing **')
+        if '__class__' in params:
+            del params['__class__']
 
-        my_id = my_dict['id']
-        i = arguments[0] + "." + my_id
-        if i not in storage.all():
+        if 'id' not in params:
+            print("** instance id missing **")
+            return
+
+        obj_id = params['id']
+        key = class_name + "." + obj_id
+
+        if key not in storage.all():
             print("** no instance found **")
-        my_obj = storage.all()[i]
+            return
 
-        for k_name, l_value in my_dict.items():
-            setattr(my_obj, k_name, l_value)
+        obj = storage.all()[key]
 
-        my_obj.save()
+        for attr_name, attr_value in params.items():
+            setattr(obj, attr_name, attr_value)
+
+        obj.save()
 
 
 if __name__ == '__main__':
