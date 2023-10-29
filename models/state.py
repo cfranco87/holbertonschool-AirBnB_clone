@@ -2,6 +2,7 @@
 """This is the User class"""
 from models.base_model import BaseModel
 
+
 class State(BaseModel):
     """creating state class"""
 
