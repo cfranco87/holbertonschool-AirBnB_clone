@@ -52,12 +52,13 @@ class HBNBCommand(cmd.Cmd):
 
     @staticmethod
     def id_verification(args):
+        from models import storage
         """Verifies id of class."""
         if len(args) < 2:
             print("** instance id missing **")
             return False
 
-        objects = models.storage.all()
+        objects = storage.all()
         string_key = str(args[0]) + '.' + str(args[1])
         if string_key not in objects.keys():
             print("** no instance found **")
