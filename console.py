@@ -65,7 +65,7 @@ class HBNBCommand(cmd.Cmd):
             return False
 
         return True
-    
+
     def do_create(self, arg):
         """creating"""
 
@@ -74,7 +74,7 @@ class HBNBCommand(cmd.Cmd):
             return
 
         arguments = re.findall(r'(?:"[^"]*"|[^"\s]+)', arg)
-        
+
         if not arguments:
             print("** missing argument(s) **")
             return
@@ -149,7 +149,7 @@ class HBNBCommand(cmd.Cmd):
         key = class_n + "." + class_id
 
         try:
-            del(storage.all()[key])
+            del (storage.all()[key])
             storage.save()
         except KeyError:
             print("** no instance found **")
@@ -166,7 +166,7 @@ class HBNBCommand(cmd.Cmd):
         else:
             for i, j in storage._FileStorage__objects.items():
                 my_list.append(str(j))
-        
+
         print(my_list)
 
     def do_update(self, arg):
