@@ -1,11 +1,13 @@
 #!/usr/bin/python3
 """command interpreter"""
 
-from datetime import datetime
+
+import re
 import cmd
+import json
+from datetime import datetime
 from models.__init__ import storage
 from models.base_model import BaseModel
-import re
 from models.user import User
 from models.state import State
 from models.city import City
@@ -35,6 +37,34 @@ class HBNBCommand(cmd.Cmd):
         """empty line"""
         pass
 
+    @classmethod
+    def class_exists(cls, args):
+        """Verifies class and checks if it is in the class list"""
+        if len(args) == 0:
+            print("** class name missing **")
+            return False
+
+        if args[0] not in cls.classes_list:
+            print("** class doesn't exist **")
+            return False
+
+        return True
+
+    @staticmethod
+    def id_verification(args):
+        """Verifies id of class."""
+        if len(args) < 2:
+            print("** instance id missing **")
+            return False
+
+        objects = models.storage.all()
+        string_key = str(args[0]) + '.' + str(args[1])
+        if string_key not in objects.keys():
+            print("** no instance found **")
+            return False
+
+        return True
+    
     def do_create(self, arg):
         """creating"""
 
@@ -91,7 +121,7 @@ class HBNBCommand(cmd.Cmd):
     def do_destroy(self, args):
         """destroy"""
         arguments = args.split()
-        if not self.class_verification(args):
+        if not self.class_exists(args):
             return
         if not self.id_verification(args):
             return
