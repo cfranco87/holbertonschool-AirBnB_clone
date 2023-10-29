@@ -97,7 +97,7 @@ class HBNBCommand(cmd.Cmd):
 
         my_instance = HBNBCommand.classes[class_n](**my_dict)
         storage.save()
-        print(my_instance)
+        print(my_instance.id)
 
     def do_show(self, args):
         """show class and id"""
