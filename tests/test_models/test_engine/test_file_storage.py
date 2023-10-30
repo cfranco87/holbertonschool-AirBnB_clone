@@ -1,42 +1,62 @@
+#!/usr/bin/python3
+""" Defines a class TestFileStorage for FileStorage module. """
 import unittest
-import os
-from models.user import User
-from models.place import Place
-from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.review import Review
 from models.base_model import BaseModel
 from models.engine.file_storage import FileStorage
+from models import storage
+import os
 
 
 class TestFileStorage(unittest.TestCase):
+    """Defines tests for FileStorage Class"""
 
-    def setUp(self):
-        self.storage = FileStorage()
-        self.user = User()
-        self.place = Place()
-        self.state = State()
-        self.city = City()
-        self.amenity = Amenity()
-        self.review = Review()
+    @classmethod
+    def setUp(cls):
+        """Runs for each test case.
+        """
+        cls.file_storage1 = FileStorage()
 
-    def test_new(self):
-        self.storage.new(self.user)
-        key = "User." + self.user.id
-        self.assertTrue(key in self.storage.all())
+    @classmethod
+    def tearDown(cls):
+        """Cleans up after each test.
+        """
+        del cls.file_storage1
+
+    def test_class_exists(self):
+        """Tests if class exists.
+        """
+        result = "<class 'models.engine.file_storage.FileStorage'>"
+        self.assertEqual(str(type(self.file_storage1)), result)
+
+    def test_types(self):
+        """Test if attributes type is correct.
+        """
+        self.assertIsInstance(self.file_storage1, FileStorage)
+        self.assertEqual(type(self.file_storage1), FileStorage)
+
+    def test_functions(self):
+        """Test if FileStorage module is documented.
+        """
+        self.assertIsNotNone(FileStorage.__doc__)
 
     def test_save(self):
-        self.storage.new(self.place)
-        self.storage.save()
-        self.assertTrue(os.path.isfile(self.storage._FileStorage__file_path))
+        """Test if save method is working correctly.
+        """
+        self.file_storage1.save()
+        self.assertEqual(os.path.exists(storage._FileStorage__file_path), True)
+        self.assertEqual(storage.all(), storage._FileStorage__objects)
 
     def test_reload(self):
-        self.storage.new(self.state)
-        self.storage.save()
-        self.storage.reload()
-        key = "State." + self.state.id
-        self.assertTrue(key in self.storage.all())
+        """Tests if reload method is working correctly.
+        """
+        self.file_storage1.save()
+        self.assertEqual(os.path.exists(storage._FileStorage__file_path), True)
+        dobj = storage.all()
+        FileStorage._FileStorage__objects = {}
+        self.assertNotEqual(dobj, FileStorage._FileStorage__objects)
+        storage.reload()
+        for key, value in storage.all().items():
+            self.assertEqual(dobj[key].to_dict(), value.to_dict())
 
 
 if __name__ == '__main__':
