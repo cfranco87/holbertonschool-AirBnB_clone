@@ -221,8 +221,9 @@ class HBNBCommand(cmd.Cmd):
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            def do_all(self, args):
-        """ Shows all objects, or all objects of a class"""
+        
+        def do_all(self, args):
+            """Shows all objects, or all objects of a class"""
         print_list = []
 
         if args:
