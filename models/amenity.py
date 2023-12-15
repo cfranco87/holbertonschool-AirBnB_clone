@@ -1,13 +1,14 @@
 #!/usr/bin/python3
-"""This is the Amenity class that inherits from BaseModel"""
-from models.base_model import BaseModel
+""" State Module for HBNB project """
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String
+from sqlalchemy.orm import relationship
+from models.place import place_amenity
 
+class Amenity(BaseModel, Base):
+    """Amenity class"""
+    
+    __tablename__ = 'amenities'
 
-class Amenity(BaseModel):
-    """creating Amenity class"""
-
-    name = ""
-
-    def __init__(self, *args, **kwargs):
-        """Creates new instances of Amenity."""
-        super().__init__(*args, **kwargs)
+    name = Column(String(128), nullable=False)
+    place_amenities = relationship("Place", secondary=place_amenity)

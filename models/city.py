@@ -1,14 +1,16 @@
 #!/usr/bin/python3
-"""This is the City class inherit from BaseModel"""
-from models.base_model import BaseModel
+""" City Module for HBNB project """
+from models.place import Place
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy.orm import relationship
 
+class City(BaseModel, Base):
+    """ The city class, contains state ID and name """
+    __tablename__ = 'cities'
 
-class City(BaseModel):
-    """creating City class"""
+    name = Column(String(128), nullable=False)
+    state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
 
-    state_id = ""
-    name = ""
-
-    def __init__(self, *args, **kwargs):
-        """Creates new instances of City."""
-        super().__init__(*args, **kwargs)
+    places = relationship('Place', backref='cities',
+    cascade='all, delete-orphan')

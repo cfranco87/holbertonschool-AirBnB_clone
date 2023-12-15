@@ -1,13 +1,28 @@
 #!/usr/bin/python3
-"""This is the User class"""
-from models.base_model import BaseModel
+""" State Module for HBNB project """
+from models.base_model import BaseModel, Base
+from models.city import City
+import models
+from sqlalchemy import Column, String
+from sqlalchemy.orm import relationship
+from os import getenv
 
 
-class State(BaseModel):
-    """creating state class"""
 
-    name = ""
+class State(BaseModel, Base):
+    """ State class """
+    __tablename__ = 'states'
+    name = Column(String(128), nullable=False)
 
-    def __init__(self, *args, **kwargs):
-        """Creates new instances of state."""
-        super().__init__(*args, **kwargs)
+    if getenv('HBNB_TYPE_STORAGE') == 'db':
+        cities = relationship('City', backref='state',
+        cascade='all, delete-orphan')
+
+    if getenv('HBNB_TYPE_STORAGE') == 'fs':
+        @property
+        def cities(self):
+            city_list = []
+            for ob_id, city in models.storage.all(models.City).items():
+                if self.id == city.state_id:
+                    city_list.append(city)
+            return city_list
