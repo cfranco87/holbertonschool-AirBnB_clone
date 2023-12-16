@@ -40,7 +40,7 @@ def number_templates(n):
      """Route to display HTML content based on whether n is a number or not"""
     try:
         n = int(n)
-        return 
+        return render_template('5-number.html', number=n)
     except ValueError:
         return 'Not a number'
 
